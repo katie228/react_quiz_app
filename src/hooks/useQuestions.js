@@ -10,7 +10,7 @@ export default function useQuestions(taskID) {
     async function fetchQuestions() {
       // database related works
       const db = getDatabase();
-      const quizRef = ref(db, "quiz/" + taskID + "/questions");
+      const quizRef = ref(db, "answers/" + taskID + "/questions");
       const quizQuery = query(quizRef, orderByKey());
 
       try {
@@ -21,7 +21,7 @@ export default function useQuestions(taskID) {
         setLoading(false);
         if (snapshot.exists()) {
           setQuestions((prevQuestions) => {
-            return [...prevQuestions, ...Object.values(snapshot.val())];
+            return [...Object.values(snapshot.val())];
           });
         }
       } catch (err) {

@@ -24,7 +24,7 @@ export default function useTaskList(page) {
         tasksRef,
         orderByKey(),
         startAt("" + page),
-        limitToFirst(7)
+        limitToFirst(200)
       );
 
       try {
@@ -35,7 +35,7 @@ export default function useTaskList(page) {
         setLoading(false);
         if (snapshot.exists()) {
           setTasks((prevTasks) => {
-            return [...prevTasks, ...Object.values(snapshot.val())];
+            return [...Object.values(snapshot.val())];
           });
         } else {
           setHasMore(false);

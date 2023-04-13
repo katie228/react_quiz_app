@@ -21,7 +21,7 @@ export default function useAnswers(taskID) {
         setLoading(false);
         if (snapshot.exists()) {
           setAnswers((prevAnswers) => {
-            return [...prevAnswers, ...Object.values(snapshot.val())];
+            return [...Object.values(snapshot.val())];
           });
         }
       } catch (err) {

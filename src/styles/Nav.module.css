@@ -48,3 +48,23 @@
     display: none;
   }
 }
+
+.nav .creatent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.nav .creatent h3 {
+  font-size: 18px;
+  line-height: 19px;
+  font-weight: 700;
+}
+
+@media only screen and (max-width: 600px) {
+  .nav .creatent h3 {
+    display: none;
+  }
+}
