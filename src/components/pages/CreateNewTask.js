@@ -1,6 +1,7 @@
-import firebase from "firebase/app";
+//import firebase from "firebase/app";
 import "firebase/database";
 import React, { useState } from "react";
+import 'firebase/firestore';
 
 const CreateTest = () => {
   const [question, setQuestion] = useState("");
