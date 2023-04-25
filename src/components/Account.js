@@ -6,8 +6,18 @@ export default function Account() {
   const { currentUser, logout } = useAuth();
   return (
     <div className={classes.account}>
+
       {currentUser ? (
         <>
+
+          <ul>
+            <li>
+              <Link to="/creatent" className={classes.creatent}>
+                <h3>Создать новый тест</h3>
+              </Link>
+            </li>
+          </ul>
+
           <span className="material-icons-outlined" title="Account">
             account_circle
           </span>

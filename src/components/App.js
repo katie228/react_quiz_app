@@ -10,24 +10,26 @@ import Result from "./pages/Result";
 import Signup from "./pages/Signup";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
+import Hello from "./pages/Hello";
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Layout>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <PublicRoute exact path="/signup" component={Signup} />
-            <PublicRoute exact path="/login" component={Login} />
-            <PrivateRoute exact path="/quiz/:id" component={Quiz} />
-            <PrivateRoute exact path="/result/:id" component={Result} />
+      <Router>
+        <AuthProvider>
+          <Layout>
+            <Switch>
+              <Route exact path="/hello" component={Hello} />
+              <PublicRoute exact path="/signup" component={Signup} />
+              <PublicRoute exact path="/login" component={Login} />
+              <PrivateRoute exact path="/" component={Home} />
+              <PrivateRoute exact path="/quiz/:id" component={Quiz} />
+              <PrivateRoute exact path="/result/:id" component={Result} />
+              <PrivateRoute exact path="/creatent" component={CreateNewTask} />
 
-            <PublicRoute exact path="/creatent" component={CreateNewTask} />
-          </Switch>
-        </Layout>
-      </AuthProvider>
-    </Router>
+            </Switch>
+          </Layout>
+        </AuthProvider>
+      </Router>
   );
 }
 

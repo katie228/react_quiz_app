@@ -16,13 +16,6 @@ export default function Nav() {
       </ul>
       <Account />
 
-      <ul>
-        <li>
-          <Link to="/creatent" className={classes.creatent}>
-            <h3>Создать новый тест</h3>
-          </Link>
-        </li>
-      </ul>
     </nav>
   );
 }

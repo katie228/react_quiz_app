@@ -2,6 +2,8 @@
 import "firebase/database";
 import React, { useState } from "react";
 import 'firebase/firestore';
+import "../../styles/CreateNewTask.css";
+
 
 const CreateTest = () => {
   const [question, setQuestion] = useState("");
@@ -53,7 +55,7 @@ const CreateTest = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form id="creatent" onSubmit={handleSubmit}>
       {message && <div className="success">{message}</div>}
       {error && <div className="error">{error}</div>}
       <div>
