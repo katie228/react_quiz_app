@@ -1,6 +1,12 @@
 import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
+<<<<<<< HEAD
 import CreateQuestion from "./CreateQuestion";
+=======
+import 'firebase/firestore';
+import "../../styles/CreateNewTask.css";
+
+>>>>>>> f6e75957decb6baee28d30473b81ce07860eebb7
 
 const QuizForm = () => {
   const [form] = Form.useForm();
@@ -53,6 +59,7 @@ const QuizForm = () => {
             <Input type="number" min={1} />
           </Form.Item>
 
+<<<<<<< HEAD
           <Form.Item>
             <Button
               onClick={handleButtonClick}
@@ -67,6 +74,46 @@ const QuizForm = () => {
       )}
       {showNewPage && <CreateQuestion />}
     </div>
+=======
+  return (
+    <form id="creatent" onSubmit={handleSubmit}>
+      {message && <div className="success">{message}</div>}
+      {error && <div className="error">{error}</div>}
+      <div>
+        <label htmlFor="question">Вопрос:</label>
+        <input
+          type="text"
+          id="question"
+          value={question}
+          onChange={handleQuestionChange}
+        />
+      </div>
+      <div>
+        <label>Варианты ответа:</label>
+        {options.map((option, index) => (
+          <div key={index}>
+            <input
+              type="text"
+              value={option.value}
+              onChange={(event) => handleOptionChange(event, index)}
+            />
+            <label>
+              Правильный ответ:
+              <input
+                type="checkbox"
+                checked={option.correct}
+                onChange={(event) => handleCheckboxChange(event, index)}
+              />
+            </label>
+          </div>
+        ))}
+        <button type="button" onClick={handleAddOption}>
+          Добавить вариант ответа
+        </button>
+      </div>
+      <button type="submit">Создать тест</button>
+    </form>
+>>>>>>> f6e75957decb6baee28d30473b81ce07860eebb7
   );
 };
 
