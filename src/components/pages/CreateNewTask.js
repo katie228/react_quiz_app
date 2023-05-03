@@ -1,96 +1,73 @@
-//import firebase from "firebase/app";
-import "firebase/database";
+import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
-import 'firebase/firestore';
+import CreateQuestion from "./CreateQuestion";
 
-const CreateTest = () => {
-  const [question, setQuestion] = useState("");
-  const [options, setOptions] = useState([{ value: "", correct: false }]);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+const QuizForm = () => {
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
-  const handleAddOption = () => {
-    setOptions([...options, { value: "", correct: false }]);
+  const onFinish = (values) => {
+    setLoading(true);
+    // Здесь вы можете выполнить запрос к серверу для создания викторины
+    console.log(values);
+    setLoading(false);
   };
+  const [showNewPage, setShowNewPage] = useState(false);
 
-  const handleOptionChange = (event, index) => {
-    const newOptions = [...options];
-    newOptions[index].value = event.target.value;
-    setOptions(newOptions);
+  const handleButtonClick = () => {
+    setShowNewPage(true);
   };
-
-  const handleCheckboxChange = (event, index) => {
-    const newOptions = [...options];
-    newOptions[index].correct = event.target.checked;
-    setOptions(newOptions);
-  };
-
-  const handleQuestionChange = (event) => {
-    setQuestion(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    // Формируем объект с данными для отправки на сервер
-    const data = {
-      question,
-      options,
-    };
-
-    // Сохраняем данные в базу данных Firebase
-    const database = firebase.database();
-    const newTestRef = database.ref("tests").push();
-    newTestRef.set(data, (error) => {
-      if (error) {
-        setError("Ошибка при сохранении теста.");
-        setMessage("");
-      } else {
-        setMessage("Тест успешно создан!");
-        setError("");
-      }
-    });
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
-      {message && <div className="success">{message}</div>}
-      {error && <div className="error">{error}</div>}
-      <div>
-        <label htmlFor="question">Вопрос:</label>
-        <input
-          type="text"
-          id="question"
-          value={question}
-          onChange={handleQuestionChange}
-        />
-      </div>
-      <div>
-        <label>Варианты ответа:</label>
-        {options.map((option, index) => (
-          <div key={index}>
-            <input
-              type="text"
-              value={option.value}
-              onChange={(event) => handleOptionChange(event, index)}
-            />
-            <label>
-              Правильный ответ:
-              <input
-                type="checkbox"
-                checked={option.correct}
-                onChange={(event) => handleCheckboxChange(event, index)}
-              />
-            </label>
-          </div>
-        ))}
-        <button type="button" onClick={handleAddOption}>
-          Добавить вариант ответа
-        </button>
-      </div>
-      <button type="submit">Создать тест</button>
-    </form>
+    <div>
+      {!showNewPage && (
+        <Form form={form} onFinish={onFinish} layout="vertical">
+          <Form.Item
+            name="quizTopic"
+            label="Тема викторины"
+            rules={[{ required: true, message: "Введите тему викторины" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="discipline"
+            label="Дисциплина"
+            rules={[{ required: true, message: "Введите дисциплину" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="quizDescription"
+            label="Описание викторины"
+            rules={[{ required: true, message: "Введите описание викторины" }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+
+          <Form.Item
+            name="quizDuration"
+            label="Время прохождения (в секундах)"
+            rules={[{ required: true, message: "Введите время прохождения" }]}
+          >
+            <Input type="number" min={1} />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              onClick={handleButtonClick}
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+            >
+              Создать вопросы
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
+      {showNewPage && <CreateQuestion />}
+    </div>
   );
 };
 
-export default CreateTest;
+export default QuizForm;

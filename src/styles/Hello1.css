@@ -1,0 +1,102 @@
+/* Hello.css */
+
+/*body {
+  margin: 0;
+  padding: 0;
+  background-image: url("D:\react\project_kw\quiz_app\src\assets\images\fon.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}*/
+/* Hello.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 40px;
+  background-image: url("D:\react\project_kw\quiz_app\src\assets\images\fon.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/*.container {
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}*/
+/*.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f2f2f2;
+  padding: 40px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 40px;
+  background-image: url("D:\react\project_kw\quiz_app\src\assets\images\fon.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+*/
+.container .row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.container .column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container img {
+  width: 200px;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.container .caption {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.container h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.container p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.container .highlight {
+  background-color: #ffbe5b;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+}

@@ -22,7 +22,7 @@ export default function LoginForm() {
       setError("");
       setLoading(true);
       await login(email, password);
-      history.push("/");
+      history.push("/home");
     } catch (err) {
       console.log(err);
       setLoading(false);

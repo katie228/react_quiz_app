@@ -3,6 +3,8 @@ import { AuthProvider } from "../contexts/AuthContext";
 import "../styles/App.css";
 import Layout from "./Layout";
 import CreateNewTask from "./pages/CreateNewTask";
+import CreateQuestion from "./pages/CreateQuestion";
+import Hello from "./pages/Hello";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Quiz from "./pages/Quiz";
@@ -17,13 +19,18 @@ function App() {
       <AuthProvider>
         <Layout>
           <Switch>
-            <Route exact path="/" component={Home} />
+            <Route exact path="/" component={Hello} />
+            <PrivateRoute exact path="/home" component={Home} />
+            <PrivateRoute
+              exact
+              path="/createQuestions"
+              component={CreateQuestion}
+            />
             <PublicRoute exact path="/signup" component={Signup} />
             <PublicRoute exact path="/login" component={Login} />
             <PrivateRoute exact path="/quiz/:id" component={Quiz} />
             <PrivateRoute exact path="/result/:id" component={Result} />
-
-            <PublicRoute exact path="/creatent" component={CreateNewTask} />
+            <PrivateRoute exact path="/creatent" component={CreateNewTask} />
           </Switch>
         </Layout>
       </AuthProvider>

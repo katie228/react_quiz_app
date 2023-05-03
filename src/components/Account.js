@@ -8,6 +8,22 @@ export default function Account() {
     <div className={classes.account}>
       {currentUser ? (
         <>
+          <ul>
+            <li>
+              <Link to="/home" className={classes.home}>
+                <h3>Тесты</h3>
+              </Link>
+            </li>
+          </ul>
+
+          <ul>
+            <li>
+              <Link to="/creatent" className={classes.creatent}>
+                <h3>Создать новый тест</h3>
+              </Link>
+            </li>
+          </ul>
+
           <span className="material-icons-outlined" title="Account">
             account_circle
           </span>
