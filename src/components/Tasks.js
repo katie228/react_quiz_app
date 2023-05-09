@@ -18,7 +18,7 @@ export default function Tasks() {
           next={() => setPage(page + 8)}
         >
           {tasks.map((task) =>
-            task.totalquestions > 0 ? (
+            task.noq > 0 ? (
               <Link
                 to={{
                   pathname: `/quiz/${task.youtubeID}`,
@@ -28,20 +28,14 @@ export default function Tasks() {
                 }}
                 key={task.youtubeID}
               >
-                <Task
-                  title={task.title}
-                  id={task.youtubeID}
-                  totalquestions={task.totalquestions}
-                  totalpoints={task.totalpoints}
-                />
+                <Task title={task.title} id={task.youtubeID} noq={task.noq} />
               </Link>
             ) : (
               <Task
                 title={task.title}
                 id={task.youtubeID}
-                totalquestions={task.totalquestions}
+                noq={task.noq}
                 key={task.youtubeID}
-                totalpoints={task.totalpoints}
               />
             )
           )}

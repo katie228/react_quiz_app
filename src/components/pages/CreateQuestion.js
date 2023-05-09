@@ -8,6 +8,7 @@ import { initializeApp } from "firebase/app";
 import "firebase/database";
 import { getDatabase, push, ref } from "firebase/database";
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSyR-75dzFPSlknW1Pj8VSkxcnWqyJ8pI",
@@ -117,7 +118,9 @@ const CreateQuestion = ({
     const totalQuestions = questions.length;
     const totalPoints = calculateTotalPoints();
 
+    const quizId = uuidv4(); // генерация уникального идентификатора
     const quizData = {
+      id: quizId, // добавление идентификатора к объекту quizData
       totalquestions: totalQuestions,
       totalpoints: totalPoints,
       title: quizTopic, // Замените на фактическое значение заголовка викторины, полученное из поля ввода
