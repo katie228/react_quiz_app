@@ -15,10 +15,6 @@ export default function Nav() {
         </li>
       </ul>
       <Account />
-<<<<<<< HEAD
-=======
-
->>>>>>> f6e75957decb6baee28d30473b81ce07860eebb7
     </nav>
   );
 }

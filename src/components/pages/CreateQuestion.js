@@ -4,9 +4,30 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { Button, Checkbox, Col, Form, Input, message, Row, Upload } from "antd";
+import { initializeApp } from "firebase/app";
+import "firebase/database";
+import { getDatabase, push, ref } from "firebase/database";
 import React, { useState } from "react";
 
-const CreateQuestion = () => {
+const firebaseConfig = {
+  apiKey: "AIzaSyCSyR-75dzFPSlknW1Pj8VSkxcnWqyJ8pI",
+  authDomain: "quiz-1c883.firebaseapp.com",
+  projectId: "quiz-1c883",
+  storageBucket: "quiz-1c883.appspot.com",
+  messagingSenderId: "46773582129",
+  appId: "1:46773582129:web:ad3af0bde57309c2f85810",
+  databaseURL: "https://quiz-1c883-default-rtdb.firebaseio.com",
+};
+
+initializeApp(firebaseConfig);
+const db = getDatabase();
+
+const CreateQuestion = ({
+  quizTopic,
+  discipline,
+  quizDescription,
+  quizDuration,
+}) => {
   const [questionIndex, setQuestionIndex] = useState(1);
   const [questions, setQuestions] = useState([
     {
@@ -17,12 +38,15 @@ const CreateQuestion = () => {
     },
   ]);
 
+  const [totalQuestions, setTotalQuestions] = useState(1);
+
   const handleAddQuestion = () => {
     setQuestions([
       ...questions,
       { content: "", points: 0, options: [], image: null },
     ]);
     setQuestionIndex(questionIndex + 1);
+    setTotalQuestions(totalQuestions + 1);
   };
 
   const handleRemoveQuestion = (index) => {
@@ -30,6 +54,7 @@ const CreateQuestion = () => {
     updatedQuestions.splice(index, 1);
     setQuestionIndex(questionIndex - 1);
     setQuestions(updatedQuestions);
+    setTotalQuestions(totalQuestions - 1);
   };
 
   const handleQuestionContentChange = (index, content) => {
@@ -43,6 +68,7 @@ const CreateQuestion = () => {
     updatedQuestions[index].points = points;
     setQuestions(updatedQuestions);
   };
+
   const handleAddOption = (index) => {
     const updatedQuestions = [...questions];
     updatedQuestions[index].options.push({ content: "", isCorrect: false });
@@ -78,7 +104,52 @@ const CreateQuestion = () => {
     updatedQuestions[index].image = null;
     setQuestions(updatedQuestions);
   };
+
+  const calculateTotalPoints = () => {
+    let totalPoints = 0;
+    questions.forEach((question) => {
+      totalPoints += parseInt(question.points, 10);
+    });
+    return totalPoints;
+  };
+
   const handleFinishQuizCreation = () => {
+    const totalQuestions = questions.length;
+    const totalPoints = calculateTotalPoints();
+
+    const quizData = {
+      totalquestions: totalQuestions,
+      totalpoints: totalPoints,
+      title: quizTopic, // Замените на фактическое значение заголовка викторины, полученное из поля ввода
+      discipline: discipline,
+      quizDescription: quizDescription,
+      quizDuration: quizDuration,
+      questions: questions.map((question) => {
+        return {
+          content: question.content, // Значение содержания вопроса, полученное из поля ввода
+          points: question.points, // Значение количества баллов, полученное из поля ввода
+          options: question.options.map((option) => {
+            return {
+              content: option.content, // Значение содержания варианта ответа, полученное из поля ввода
+              isCorrect: option.isCorrect, // Значение правильности выбранного варианта ответа, полученное из чекбокса
+            };
+          }),
+          image: question.image, // Ссылка на загруженное изображение, если есть
+        };
+      }),
+    };
+    // Подсчет количества вопросов и суммы баллов за все вопросы
+
+    // Отправьте данные в Firebase
+    const quizzesRef = ref(db, "quizzes");
+    push(quizzesRef, quizData)
+      .then(() => {
+        console.log("Данные успешно отправлены в Firebase");
+      })
+      .catch((error) => {
+        console.error("Ошибка при отправке данных в Firebase:", error);
+      });
+
     questions.forEach((question, index) => {
       if (question.image) {
         const reader = new FileReader();
@@ -97,7 +168,7 @@ const CreateQuestion = () => {
 
   return (
     <div>
-      <h1>Тема викторины</h1>
+      <h1>{quizTopic}</h1>
 
       {questions.map((question, questionIndex) => (
         <div key={questionIndex}>
@@ -111,7 +182,7 @@ const CreateQuestion = () => {
                 }
               />
             </Form.Item>
-            ы
+
             <Form.Item label="Количество баллов">
               <Input
                 type="number"

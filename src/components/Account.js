@@ -6,10 +6,8 @@ export default function Account() {
   const { currentUser, logout } = useAuth();
   return (
     <div className={classes.account}>
-
       {currentUser ? (
         <>
-<<<<<<< HEAD
           <ul>
             <li>
               <Link to="/home" className={classes.home}>
@@ -17,8 +15,6 @@ export default function Account() {
               </Link>
             </li>
           </ul>
-=======
->>>>>>> f6e75957decb6baee28d30473b81ce07860eebb7
 
           <ul>
             <li>

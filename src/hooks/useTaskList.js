@@ -19,7 +19,7 @@ export default function useTaskList(page) {
     async function fetchTasks() {
       // database related works
       const db = getDatabase();
-      const tasksRef = ref(db, "tasks");
+      const tasksRef = ref(db, "quizzes"); //"tasks"
       const taskQuery = query(
         tasksRef,
         orderByKey(),

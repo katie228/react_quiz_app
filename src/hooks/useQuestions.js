@@ -10,7 +10,7 @@ export default function useQuestions(taskID) {
     async function fetchQuestions() {
       // database related works
       const db = getDatabase();
-      const quizRef = ref(db, "answers/" + taskID + "/questions");
+      const quizRef = ref(db, "quizzes/" + taskID + "/questions"); //"answers/"
       const quizQuery = query(quizRef, orderByKey());
 
       try {
