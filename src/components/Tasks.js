@@ -18,24 +18,28 @@ export default function Tasks() {
           next={() => setPage(page + 8)}
         >
           {tasks.map((task) =>
-            task.noq > 0 ? (
+            task.totalquestions > 0 ? (
               <Link
                 to={{
-                  pathname: `/quiz/${task.youtubeID}`,
+                  pathname: `/quiz/${task.id}`,
                   state: {
                     taskTitle: task.title,
                   },
                 }}
-                key={task.youtubeID}
+                key={task.id}
               >
-                <Task title={task.title} id={task.youtubeID} noq={task.noq} />
+                <Task
+                  title={task.title}
+                  id={task.id}
+                  totalquestions={task.totalquestions}
+                />
               </Link>
             ) : (
               <Task
                 title={task.title}
-                id={task.youtubeID}
-                noq={task.noq}
-                key={task.youtubeID}
+                id={task.id}
+                totalquestions={task.totalquestions}
+                key={task.id}
               />
             )
           )}

@@ -44,7 +44,7 @@ export default function Result() {
 
       {answers && answers.length > 0 && (
         <>
-          <Summary score={userScore} noq={answers.length} />
+          <Summary score={userScore} totalquestions={answers.length} />
           <Analysis answers={answers} />
         </>
       )}

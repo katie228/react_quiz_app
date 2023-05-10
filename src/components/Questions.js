@@ -6,7 +6,7 @@ export default function Questions({ answers = [] }) {
     <div className={classes.question} key={index}>
       <div className={classes.qtitle}>
         <span className="material-icons-outlined"> help_outline </span>
-        {answer.title}
+        {answer.content}
       </div>
       <Answers input={false} options={answer.options} />
     </div>

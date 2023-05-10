@@ -97,7 +97,7 @@ export default function Quiz() {
       {error && <div>Ошибка!</div>}
       {!loading && !error && qna && qna.length > 0 && (
         <>
-          <h1>{qna[currentQuestion].title}</h1>
+          <h1>{qna[currentQuestion].content}</h1>
           <h4>Вопрос может иметь несколько ответов</h4>
           <Answers
             input

@@ -11,7 +11,7 @@ export default function Answers({ options = [], handleChange, input }) {
             <Checkbox
               key={index}
               className={classes.answer}
-              text={option.title}
+              text={option.content} //title
               value={index}
               checked={option.checked}
               onChange={(e) => handleChange(e, index)}
@@ -26,7 +26,7 @@ export default function Answers({ options = [], handleChange, input }) {
                   ? classes.wrong
                   : null
               }`}
-              text={option.title}
+              text={option.content} //title
               defaultChecked={option.checked}
               disabled
             />
