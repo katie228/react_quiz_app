@@ -14,6 +14,7 @@ export default function Result() {
 
   function calculate() {
     let score = 0;
+    let totalPoints = 0;
 
     answers.forEach((question, index1) => {
       let correctIndexes = [],
@@ -28,14 +29,16 @@ export default function Result() {
       });
 
       if (_.isEqual(correctIndexes, checkedIndexes)) {
-        score = score + 5;
+        score += parseInt(question.points, 10);
       }
+
+      totalPoints += parseInt(question.points, 10);
     });
 
-    return score;
+    return { score, totalPoints };
   }
 
-  const userScore = calculate();
+  const { score, totalPoints } = calculate();
 
   return (
     <>
@@ -44,7 +47,11 @@ export default function Result() {
 
       {answers && answers.length > 0 && (
         <>
-          <Summary score={userScore} totalquestions={answers.length} />
+          <Summary
+            score={score}
+            totalPoints={totalPoints}
+            totalQuestions={answers.length}
+          />
           <Analysis answers={answers} />
         </>
       )}

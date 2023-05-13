@@ -71,20 +71,40 @@ export default function Quiz() {
   // submit quiz
   async function submit() {
     const { uid } = currentUser;
+    const score = calculateScore();
 
     const db = getDatabase();
     const resultRef = ref(db, `result/${uid}`);
 
     await set(resultRef, {
-      [id]: qna,
+      [id]: {
+        qna,
+        score,
+      },
     });
 
     history.push({
       pathname: `/result/${id}`,
       state: {
         qna,
+        score,
       },
     });
+  }
+
+  // calculate user's score
+  function calculateScore() {
+    let score = 0;
+
+    qna.forEach((question) => {
+      question.options.forEach((option) => {
+        if (option.checked && option.correct) {
+          score += parseInt(question.points, 10);
+        }
+      });
+    });
+
+    return score;
   }
 
   // calculate percentage of progress
