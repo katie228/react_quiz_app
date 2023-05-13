@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Quiz from "./pages/Quiz";
 import Result from "./pages/Result";
+import ResultsFT from "./pages/ResultsForTeacher";
 import Signup from "./pages/Signup";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
@@ -26,6 +27,7 @@ function App() {
               path="/createQuestions"
               component={CreateQuestion}
             />
+            <PrivateRoute exact path="/resforteacher" component={ResultsFT} />
             <PublicRoute exact path="/signup" component={Signup} />
             <PublicRoute exact path="/login" component={Login} />
             <PrivateRoute exact path="/quiz/:id" component={Quiz} />

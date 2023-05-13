@@ -7,6 +7,10 @@ export default function Account() {
   const { currentUser, logout } = useAuth();
   const history = useHistory();
 
+  const handleResForTeacher = () => {
+    history.push("/resforteacher");
+  };
+
   const handleSignUp = () => {
     history.push("/signup");
   };
@@ -29,13 +33,19 @@ export default function Account() {
         <>
           <ul>
             <li>
+              <Button onClick={handleResForTeacher}>Результаты</Button>
+            </li>
+          </ul>
+
+          <ul>
+            <li>
               <Button onClick={handleHome}>Тесты</Button>
             </li>
           </ul>
 
           <ul>
             <li>
-              <Button onClick={handleCreatent}>Создать новый тест</Button>
+              <Button onClick={handleCreatent}>Новый тест</Button>
             </li>
           </ul>
 

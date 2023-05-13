@@ -1,7 +1,8 @@
-import { getDatabase, ref, set } from "firebase/database";
+import { get, getDatabase, ref, set } from "firebase/database";
 import _ from "lodash";
 import { useEffect, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../../contexts/AuthContext";
 import useQuestions from "../../hooks/useQuestions";
 import Answers from "../Answers";
@@ -44,31 +45,8 @@ export default function Quiz() {
       value: questions,
     });
   }, [questions]);
-
-  function handleAnswerChange(e, index) {
-    dispatch({
-      type: "answer",
-      questionID: currentQuestion,
-      optionIndex: index,
-      value: e.target.checked,
-    });
-  }
-
-  // handle when user clicks the next button to get the next question
-  function nextQuestion() {
-    if (currentQuestion + 1 < questions.length) {
-      setCurrentQuestion((prevCurrent) => prevCurrent + 1);
-    }
-  }
-
-  // handle when user clicks the prev button to get back to the previous question
-  function prevQuestion() {
-    if (currentQuestion >= 1 && currentQuestion <= questions.length) {
-      setCurrentQuestion((prevCurrent) => prevCurrent - 1);
-    }
-  }
-
   // submit quiz
+  /*
   async function submit() {
     const { uid } = currentUser;
     const score = calculateScore();
@@ -91,8 +69,62 @@ export default function Quiz() {
       },
     });
   }
+*/
+  async function submit() {
+    const { uid } = currentUser;
+    const score = calculateScore();
 
-  // calculate user's score
+    const db = getDatabase();
+    const resultRef = ref(db, `result/${uid}/${id}`);
+
+    const snapshot = await get(resultRef);
+
+    let results = {};
+
+    if (snapshot.exists()) {
+      results = snapshot.val(); // Получаем существующие результаты
+    }
+
+    const resultKey = uuidv4(); // Генерируем уникальный ключ
+    const timestamp = new Date().toLocaleString(); // Получаем текущую дату и время в виде строки
+    results[resultKey] = {
+      qna,
+      score,
+      timestamp,
+    }; // Добавляем новый результат
+
+    await set(resultRef, results);
+
+    history.push({
+      pathname: `/result/${id}`,
+      state: {
+        qna,
+        score,
+      },
+    });
+  }
+
+  function handleAnswerChange(e, index) {
+    dispatch({
+      type: "answer",
+      questionID: currentQuestion,
+      optionIndex: index,
+      value: e.target.checked,
+    });
+  }
+
+  function nextQuestion() {
+    if (currentQuestion + 1 < questions.length) {
+      setCurrentQuestion((prevCurrent) => prevCurrent + 1);
+    }
+  }
+
+  function prevQuestion() {
+    if (currentQuestion >= 1 && currentQuestion <= questions.length) {
+      setCurrentQuestion((prevCurrent) => prevCurrent - 1);
+    }
+  }
+
   function calculateScore() {
     let score = 0;
 
