@@ -3,12 +3,13 @@ import {
   MinusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { Button, Checkbox, Col, Form, Input, message, Row, Upload } from "antd";
+import { Checkbox, Col, Form, Input, message, Row, Upload } from "antd";
 import { initializeApp } from "firebase/app";
 import "firebase/database";
 import { getDatabase, push, ref } from "firebase/database";
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import Button from "../Button.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSyR-75dzFPSlknW1Pj8VSkxcnWqyJ8pI",
@@ -72,7 +73,7 @@ const CreateQuestion = ({
 
   const handleAddOption = (index) => {
     const updatedQuestions = [...questions];
-    updatedQuestions[index].options.push({ content: "", isCorrect: false });
+    updatedQuestions[index].options.push({ content: "", correct: false });
     setQuestions(updatedQuestions);
   };
 
@@ -90,7 +91,7 @@ const CreateQuestion = ({
 
   const handleOptionCorrectChange = (questionIndex, optionIndex, e) => {
     const updatedQuestions = [...questions];
-    updatedQuestions[questionIndex].options[optionIndex].isCorrect =
+    updatedQuestions[questionIndex].options[optionIndex].correct =
       e.target.checked;
     setQuestions(updatedQuestions);
   };
@@ -134,7 +135,7 @@ const CreateQuestion = ({
           options: question.options.map((option) => {
             return {
               content: option.content, // Значение содержания варианта ответа, полученное из поля ввода
-              isCorrect: option.isCorrect, // Значение правильности выбранного варианта ответа, полученное из чекбокса
+              correct: option.correct, // Значение правильности выбранного варианта ответа, полученное из чекбокса
             };
           }),
           image: question.image, // Ссылка на загруженное изображение, если есть
@@ -260,7 +261,7 @@ const CreateQuestion = ({
                   </Col>
                   <Col>
                     <Checkbox
-                      checked={option.isCorrect}
+                      checked={option.correct}
                       onChange={(e) =>
                         handleOptionCorrectChange(questionIndex, optionIndex, e)
                       }

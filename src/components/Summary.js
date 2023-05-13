@@ -1,13 +1,13 @@
 import image from "../assets/images/success.png";
 import classes from "../styles/Summary.module.css";
 
-export default function Summary({ score, noq }) {
+export default function Summary({ score, totalquestions }) {
   return (
     <div class={classes.summary}>
       <div className={classes.point}>
         <p className={classes.score}>
           Вы набрали <br />
-          {score} баллов из {noq * 5}!
+          {score} баллов из {totalquestions * 5}!
         </p>
       </div>
 

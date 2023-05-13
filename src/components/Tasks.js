@@ -32,6 +32,7 @@ export default function Tasks() {
                   title={task.title}
                   id={task.id}
                   totalquestions={task.totalquestions}
+                  totalpoints={task.totalpoints}
                 />
               </Link>
             ) : (
@@ -40,6 +41,7 @@ export default function Tasks() {
                 id={task.id}
                 totalquestions={task.totalquestions}
                 key={task.id}
+                totalpoints={task.totalpoints}
               />
             )
           )}

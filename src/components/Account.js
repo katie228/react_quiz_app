@@ -1,26 +1,41 @@
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import Button from "../components/Button.js";
 import { useAuth } from "../contexts/AuthContext";
 import classes from "../styles/Account.module.css";
 
 export default function Account() {
   const { currentUser, logout } = useAuth();
+  const history = useHistory();
+
+  const handleSignUp = () => {
+    history.push("/signup");
+  };
+
+  const handleLogin = () => {
+    history.push("/login");
+  };
+
+  const handleHome = () => {
+    history.push("/home");
+  };
+
+  const handleCreatent = () => {
+    history.push("/creatent");
+  };
+
   return (
     <div className={classes.account}>
       {currentUser ? (
         <>
           <ul>
             <li>
-              <Link to="/home" className={classes.home}>
-                <h3>Тесты</h3>
-              </Link>
+              <Button onClick={handleHome}>Тесты</Button>
             </li>
           </ul>
 
           <ul>
             <li>
-              <Link to="/creatent" className={classes.creatent}>
-                <h3>Создать новый тест</h3>
-              </Link>
+              <Button onClick={handleCreatent}>Создать новый тест</Button>
             </li>
           </ul>
 
@@ -39,8 +54,8 @@ export default function Account() {
         </>
       ) : (
         <>
-          <Link to="/signup">Регистрация</Link>
-          <Link to="/login">Вход</Link>
+          <Button onClick={handleSignUp}>Регистрация</Button>
+          <Button onClick={handleLogin}>Вход</Button>
         </>
       )}
     </div>

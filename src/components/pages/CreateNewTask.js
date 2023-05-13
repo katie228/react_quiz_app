@@ -1,5 +1,7 @@
-import { Button, Form, Input } from "antd";
+import { Form, Input } from "antd";
 import React, { useState } from "react";
+import "../../styles/CreateNewTask.css";
+import Button from "../Button.js";
 import CreateQuestion from "./CreateQuestion";
 
 const QuizForm = () => {
@@ -8,7 +10,7 @@ const QuizForm = () => {
 
   const onFinish = (values) => {
     setLoading(true);
-    setShowNewPage(true); // изменено
+    setShowNewPage(true);
     setLoading(false);
   };
   const [showNewPage, setShowNewPage] = useState(false);
@@ -21,6 +23,7 @@ const QuizForm = () => {
             name="quizTopic"
             label="Тема викторины"
             rules={[{ required: true, message: "Введите тему викторины" }]}
+            className="custom-label" // Применяем пользовательский класс
           >
             <Input />
           </Form.Item>
@@ -29,6 +32,7 @@ const QuizForm = () => {
             name="discipline"
             label="Дисциплина"
             rules={[{ required: true, message: "Введите дисциплину" }]}
+            className="custom-label" // Применяем пользовательский класс
           >
             <Input />
           </Form.Item>
@@ -37,6 +41,7 @@ const QuizForm = () => {
             name="quizDescription"
             label="Описание викторины"
             rules={[{ required: true, message: "Введите описание викторины" }]}
+            className="custom-label" // Применяем пользовательский класс
           >
             <Input.TextArea />
           </Form.Item>
@@ -45,13 +50,14 @@ const QuizForm = () => {
             name="quizDuration"
             label="Время прохождения (в секундах)"
             rules={[{ required: true, message: "Введите время прохождения" }]}
+            className="custom-label" // Применяем пользовательский класс
           >
             <Input type="number" min={1} />
           </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={loading}>
-              Создать вопросы
+              Перейти к созданию вопросов
             </Button>
           </Form.Item>
         </Form>
