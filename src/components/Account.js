@@ -53,6 +53,7 @@ export default function Account() {
             account_circle
           </span>
           <span>{currentUser.displayName}</span>
+          <span>{currentUser.role}</span>
           <span
             className="material-icons-outlined"
             title="Logout"

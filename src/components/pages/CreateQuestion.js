@@ -282,6 +282,9 @@ const CreateQuestion = ({
               ))}
             </Form.Item>
             <Button
+              style={{
+                marginTop: "3px",
+              }}
               type="dashed"
               onClick={() => handleAddOption(questionIndex)}
               block
@@ -293,6 +296,9 @@ const CreateQuestion = ({
 
           {questionIndex > 0 && (
             <Button
+              style={{
+                marginTop: "3px",
+              }}
               type="dashed"
               onClick={() => handleRemoveQuestion(questionIndex)}
               block
@@ -307,6 +313,9 @@ const CreateQuestion = ({
       ))}
 
       <Button
+        style={{
+          marginTop: "3px",
+        }}
         type="dashed"
         onClick={handleAddQuestion}
         block
@@ -315,7 +324,14 @@ const CreateQuestion = ({
         Создать новый вопрос
       </Button>
 
-      <Button type="primary" onClick={handleFinishQuizCreation} block>
+      <Button
+        style={{
+          marginTop: "3px",
+        }}
+        type="primary"
+        onClick={handleFinishQuizCreation}
+        block
+      >
         Завершить создание викторины
       </Button>
     </div>

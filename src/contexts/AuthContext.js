@@ -6,6 +6,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+import "firebase/database";
 import React, { useContext, useEffect, useState } from "react";
 import "../firebase";
 
@@ -30,17 +31,24 @@ export function AuthProvider({ children }) {
   }, []);
 
   //signup func
-  async function signup(email, password, username) {
+
+  async function signup(email, password, username, role) {
     const auth = getAuth();
-    await createUserWithEmailAndPassword(auth, email, password);
+    const { user } = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    //await createUserWithEmailAndPassword(auth, email, password);
 
     await updateProfile(auth.currentUser, {
       displayName: username,
     });
 
-    const user = auth.currentUser;
+    //const user = auth.currentUser;
     setCurrentUser({
       ...user,
+      role: role,
     });
   }
 
