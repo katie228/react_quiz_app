@@ -71,7 +71,7 @@ export default function Quiz() {
   }
 */
   async function submit() {
-    const { uid } = currentUser;
+    const { uid, displayName } = currentUser;
     const score = calculateScore();
 
     const db = getDatabase();
@@ -91,6 +91,7 @@ export default function Quiz() {
       qna,
       score,
       timestamp,
+      displayName, // добавляем имя пользователя
     }; // Добавляем новый результат
 
     await set(resultRef, results);

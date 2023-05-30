@@ -9,45 +9,103 @@ export default function ResultsFT() {
 
   useEffect(() => {
     async function fetchResults() {
-      const { uid, displayName } = currentUser;
+      const { uid } = currentUser;
 
       const db = getDatabase();
-      const resultsRef = ref(db, `result/${uid}`);
+      const rolesRef = ref(db, "roles");
 
-      const snapshot = await get(resultsRef);
+      const rolesSnapshot = await get(rolesRef);
 
-      if (snapshot.exists()) {
-        const userResults = snapshot.val();
+      if (rolesSnapshot.exists()) {
+        const rolesData = rolesSnapshot.val();
+        const userRole = rolesData[uid]; // Получаем роль текущего пользователя
+        console.log(userRole);
         const resultsList = [];
 
-        for (const testId in userResults) {
-          const testResults = userResults[testId];
+        // Если пользователь - преподаватель, загружаем результаты всех студентов
+        if (userRole === "teacher") {
+          const resultsRef = ref(db, "result");
+          const resultsSnapshot = await get(resultsRef);
 
-          const quizzesRef = ref(db, "quizzes");
-          const quizzesSnapshot = await get(quizzesRef);
+          if (resultsSnapshot.exists()) {
+            const allResults = resultsSnapshot.val();
 
-          if (quizzesSnapshot.exists()) {
-            const quizData = quizzesSnapshot.val();
+            for (const studentUid in allResults) {
+              const studentResults = allResults[studentUid];
 
-            for (const quizId in quizData) {
-              if (quizData[quizId].id === testId) {
-                const discipline = quizData[quizId].discipline;
-                const totalpoints = quizData[quizId].totalpoints;
-                const title = quizData[quizId].title;
+              for (const testId in studentResults) {
+                const testResults = studentResults[testId];
 
-                for (const resultId in testResults) {
-                  resultsList.push({
-                    testId,
-                    resultId,
-                    displayName,
-                    discipline,
-                    totalpoints,
-                    title,
-                    ...testResults[resultId],
-                  });
+                const quizzesRef = ref(db, "quizzes");
+                const quizzesSnapshot = await get(quizzesRef);
+
+                if (quizzesSnapshot.exists()) {
+                  const quizData = quizzesSnapshot.val();
+
+                  for (const quizId in quizData) {
+                    if (quizData[quizId].id === testId) {
+                      const discipline = quizData[quizId].discipline;
+                      const totalpoints = quizData[quizId].totalpoints;
+                      const title = quizData[quizId].title;
+
+                      for (const resultId in testResults) {
+                        resultsList.push({
+                          testId,
+                          resultId,
+                          displayName: testResults[resultId].displayName,
+                          discipline,
+                          totalpoints,
+                          title,
+                          ...testResults[resultId],
+                        });
+                      }
+                      break;
+                    }
+                  }
                 }
+              }
+            }
+          }
+        }
 
-                break;
+        // Если пользователь - студент, загружаем только его результаты
+        if (userRole === "student") {
+          const studentResultsRef = ref(db, `result/${uid}`);
+          const studentResultsSnapshot = await get(studentResultsRef);
+
+          if (studentResultsSnapshot.exists()) {
+            const studentResults = studentResultsSnapshot.val();
+
+            for (const testId in studentResults) {
+              const testResults = studentResults[testId];
+
+              const quizzesRef = ref(db, "quizzes");
+              const quizzesSnapshot = await get(quizzesRef);
+
+              if (quizzesSnapshot.exists()) {
+                const quizData = quizzesSnapshot.val();
+
+                for (const quizId in quizData) {
+                  if (quizData[quizId].id === testId) {
+                    const discipline = quizData[quizId].discipline;
+                    const totalpoints = quizData[quizId].totalpoints;
+                    const title = quizData[quizId].title;
+
+                    for (const resultId in testResults) {
+                      resultsList.push({
+                        testId,
+                        resultId,
+                        displayName: testResults[resultId].displayName,
+                        discipline,
+                        totalpoints,
+                        title,
+                        ...testResults[resultId],
+                      });
+                    }
+
+                    break;
+                  }
+                }
               }
             }
           }
@@ -78,7 +136,7 @@ export default function ResultsFT() {
           ))}
         </ul>
       ) : (
-        <p>Нет доступных результатов</p>
+        <p>Загрузка..</p>
       )}
     </div>
   );

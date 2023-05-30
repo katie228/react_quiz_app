@@ -43,17 +43,19 @@ export default function Account() {
             </li>
           </ul>
 
-          <ul>
-            <li>
-              <Button onClick={handleCreatent}>Новый тест</Button>
-            </li>
-          </ul>
+          {/* Показать кнопку "Новый тест" только если роль пользователя не является 'student' */}
+          {currentUser.role !== "student" && (
+            <ul>
+              <li>
+                <Button onClick={handleCreatent}>Новый тест</Button>
+              </li>
+            </ul>
+          )}
 
           <span className="material-icons-outlined" title="Account">
             account_circle
           </span>
           <span>{currentUser.displayName}</span>
-          <span>{currentUser.role}</span>
           <span
             className="material-icons-outlined"
             title="Logout"

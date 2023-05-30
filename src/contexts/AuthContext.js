@@ -7,6 +7,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import "firebase/database";
+import { get, getDatabase, ref, set } from "firebase/database";
 import React, { useContext, useEffect, useState } from "react";
 import "../firebase";
 
@@ -30,8 +31,6 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  //signup func
-
   async function signup(email, password, username, role) {
     const auth = getAuth();
     const { user } = await createUserWithEmailAndPassword(
@@ -39,23 +38,45 @@ export function AuthProvider({ children }) {
       email,
       password
     );
-    //await createUserWithEmailAndPassword(auth, email, password);
 
-    await updateProfile(auth.currentUser, {
+    await updateProfile(user, {
       displayName: username,
     });
 
-    //const user = auth.currentUser;
-    setCurrentUser({
-      ...user,
+    // Записываем роль в Firebase Realtime Database
+    const db = getDatabase();
+    set(ref(db, "roles/" + user.uid), role);
+
+    setCurrentUser((prevUser) => ({
+      ...prevUser,
       role: role,
-    });
+      displayName: username, // Добавляем displayName в состояние
+    }));
   }
 
-  //login func
-  function login(email, password) {
+  async function login(email, password) {
     const auth = getAuth();
-    return signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    const user = userCredential.user;
+
+    // сначала обновляем состояние с базовыми данными пользователя
+    setCurrentUser(user);
+
+    // Затем извлекаем роль из Firebase Realtime Database
+    const db = getDatabase();
+    const roleSnapshot = await get(ref(db, "roles/" + user.uid));
+    const role = roleSnapshot.val(); // Извлекаем role
+
+    setCurrentUser((prevUser) => ({
+      ...prevUser,
+      role: role,
+      displayName: user.displayName, // Добавляем displayName в состояние
+    }));
   }
 
   //logout func
