@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
 
     // Записываем роль в Firebase Realtime Database
     const db = getDatabase();
-    set(ref(db, "roles/" + user.uid), role);
+    set(ref(db, "roles/" + user.uid), { role: role });
 
     setCurrentUser((prevUser) => ({
       ...prevUser,
@@ -69,8 +69,9 @@ export function AuthProvider({ children }) {
 
     // Затем извлекаем роль из Firebase Realtime Database
     const db = getDatabase();
-    const roleSnapshot = await get(ref(db, "roles/" + user.uid));
-    const role = roleSnapshot.val(); // Извлекаем role
+    const roleRef = ref(db, "roles/" + user.uid);
+    const roleSnapshot = await get(roleRef);
+    const role = roleSnapshot.val().role;
 
     setCurrentUser((prevUser) => ({
       ...prevUser,

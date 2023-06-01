@@ -11,6 +11,7 @@ import Quiz from "./pages/Quiz";
 import Result from "./pages/Result";
 import ResultsFT from "./pages/ResultsForTeacher";
 import Signup from "./pages/Signup";
+import StudentRegistration from "./pages/StudentRegistration";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
@@ -33,6 +34,7 @@ function App() {
             <PrivateRoute exact path="/quiz/:id" component={Quiz} />
             <PrivateRoute exact path="/result/:id" component={Result} />
             <PrivateRoute exact path="/creatent" component={CreateNewTask} />
+            <PrivateRoute exact path="/streg" component={StudentRegistration} />
           </Switch>
         </Layout>
       </AuthProvider>

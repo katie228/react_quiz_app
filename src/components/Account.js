@@ -52,6 +52,15 @@ export default function Account() {
             </ul>
           )}
 
+          {/* Показать кнопку "Регистрация" только если роль пользователя является 'администратором' */}
+          {/*{currentUser.role === "admin" && (*/}
+          {/*<ul>*/}
+          {/*<li>*/}
+          {/*<Button onClick={handleSignUp}>Регистрация</Button>*/}
+          {/*</li>*/}
+          {/*</ul>*/}
+          {/*)}*/}
+
           <span className="material-icons-outlined" title="Account">
             account_circle
           </span>
@@ -68,6 +77,7 @@ export default function Account() {
       ) : (
         <>
           <Button onClick={handleSignUp}>Регистрация</Button>
+          {/*это убрать потом чтобы только админ мог регистрировать*/}
           <Button onClick={handleLogin}>Вход</Button>
         </>
       )}

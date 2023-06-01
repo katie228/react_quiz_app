@@ -18,7 +18,7 @@ export default function ResultsFT() {
 
       if (rolesSnapshot.exists()) {
         const rolesData = rolesSnapshot.val();
-        const userRole = rolesData[uid]; // Получаем роль текущего пользователя
+        const userRole = rolesData[uid]?.role; // Получаем роль текущего пользователя
         console.log(userRole);
         const resultsList = [];
 
