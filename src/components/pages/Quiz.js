@@ -22,7 +22,7 @@ const reducer = (state, action) => {
     case "answer":
       const questions = _.cloneDeep(state);
       questions[action.questionID].options[action.optionIndex].checked =
-        action.value;
+          action.value;
 
       return questions;
     default:
@@ -34,10 +34,11 @@ export default function Quiz() {
   const { id } = useParams();
   const { loading, error, questions } = useQuestions(id);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-
   const [qna, dispatch] = useReducer(reducer, initialState);
   const { currentUser } = useAuth();
   const history = useHistory();
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [timeText, setTimeText] = useState("");
 
   useEffect(() => {
     dispatch({
@@ -45,31 +46,61 @@ export default function Quiz() {
       value: questions,
     });
   }, [questions]);
-  // submit quiz
-  /*
-  async function submit() {
-    const { uid } = currentUser;
-    const score = calculateScore();
 
-    const db = getDatabase();
-    const resultRef = ref(db, `result/${uid}`);
+  useEffect(() => {
+    let timer;
 
-    await set(resultRef, {
-      [id]: {
-        qna,
-        score,
-      },
-    });
+    const fetchQuizDuration = async () => {
+      try {
+        const db = getDatabase();
+        const quizzesRef = ref(db, "quizzes/");
+        const snapshot = await get(quizzesRef);
 
-    history.push({
-      pathname: `/result/${id}`,
-      state: {
-        qna,
-        score,
-      },
-    });
-  }
-*/
+        let duration = 0;
+
+        snapshot.forEach((quizSnapshot) => {
+          const quiz = quizSnapshot.val();
+          if (quiz.id === id) {
+            duration = quiz.quizDuration || 0;
+          }
+        });
+
+        console.log("Duration from database:", duration);
+        setTimeLeft(duration * 60);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchQuizDuration();
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [id]);
+
+  useEffect(() => {
+    let timer;
+
+    timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    if (timeLeft === 0) {
+      submit();
+    }
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [timeLeft]);
+
+  useEffect(() => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    setTimeText(`${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`);
+  }, [timeLeft]);
+
   async function submit() {
     const { uid, displayName } = currentUser;
     const score = calculateScore();
@@ -82,17 +113,17 @@ export default function Quiz() {
     let results = {};
 
     if (snapshot.exists()) {
-      results = snapshot.val(); // Получаем существующие результаты
+      results = snapshot.val();
     }
 
-    const resultKey = uuidv4(); // Генерируем уникальный ключ
-    const timestamp = new Date().toLocaleString(); // Получаем текущую дату и время в виде строки
+    const resultKey = uuidv4();
+    const timestamp = new Date().toLocaleString();
     results[resultKey] = {
       qna,
       score,
       timestamp,
-      displayName, // добавляем имя пользователя
-    }; // Добавляем новый результат
+      displayName,
+    };
 
     await set(resultRef, results);
 
@@ -140,31 +171,31 @@ export default function Quiz() {
     return score;
   }
 
-  // calculate percentage of progress
   const percentage =
-    questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
+      questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   return (
-    <>
-      {loading && <div>Загрузка ...</div>}
-      {error && <div>Ошибка!</div>}
-      {!loading && !error && qna && qna.length > 0 && (
-        <>
-          <h1>{qna[currentQuestion].content}</h1>
-          <h4>Вопрос может иметь несколько ответов</h4>
-          <Answers
-            input
-            options={qna[currentQuestion].options}
-            handleChange={handleAnswerChange}
-          />
-          <ProgressBar
-            next={nextQuestion}
-            prev={prevQuestion}
-            submit={submit}
-            progress={percentage}
-          />
-        </>
-      )}
-    </>
+      <>
+        {loading && <div>Загрузка ...</div>}
+        {error && <div>Ошибка!</div>}
+        {!loading && !error && qna && qna.length > 0 && (
+            <>
+              <div>Оставшееся время: {timeText}</div>
+              <h1>{qna[currentQuestion].content}</h1>
+              <h4>Вопрос может иметь несколько ответов</h4>
+              <Answers
+                  input
+                  options={qna[currentQuestion].options}
+                  handleChange={handleAnswerChange}
+              />
+              <ProgressBar
+                  next={nextQuestion}
+                  prev={prevQuestion}
+                  submit={submit}
+                  progress={percentage}
+              />
+            </>
+        )}
+      </>
   );
 }

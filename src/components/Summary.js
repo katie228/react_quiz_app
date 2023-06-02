@@ -1,7 +1,7 @@
 import image from "../assets/images/success.png";
 import classes from "../styles/Summary.module.css";
 
-export default function Summary({ score, totalPoints, totalQuestions }) {
+export default function Summary({ score, totalPoints}) {
   return (
     <div className={classes.summary}>
       <div className={classes.point}>
@@ -15,7 +15,6 @@ export default function Summary({ score, totalPoints, totalQuestions }) {
         <img src={image} alt="Success" />
       </div>
 
-      <p>Всего вопросов: {totalQuestions}</p>
     </div>
   );
 }
