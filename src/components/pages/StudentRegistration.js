@@ -2,10 +2,13 @@ import { initializeApp } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  signOut,
   updateProfile,
 } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 import React, { useState } from "react";
-import { read, utils } from "xlsx";
+import { useHistory } from "react-router-dom";
+import { read, utils, writeFile } from "xlsx";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSyR-75dzFPSlknW1Pj8VSkxcnWqyJ8pI",
@@ -19,10 +22,13 @@ const firebaseConfig = {
 
 const StudentRegistration = () => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [originalFileName, setOriginalFileName] = useState("");
+  const history = useHistory();
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
+    setOriginalFileName(file.name);
   };
 
   const handleRegistration = async () => {
@@ -36,14 +42,12 @@ const StudentRegistration = () => {
         const data = new Uint8Array(e.target.result);
         const workbook = read(data, { type: "array" });
 
-        // Предположим, что данные студентов находятся в первом листе файла
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const studentsData = utils.sheet_to_json(worksheet, { header: "A" });
 
-        let endIndex = studentsData.length - 1; // Индекс последней строки, которую нужно исключить
+        let endIndex = studentsData.length - 1;
 
-        // Пропустить строки, которые не содержат данных студентов
-        let startIndex = 5; // Индекс строки, с которой начинаются данные студентов
+        let startIndex = 4;
         while (
           startIndex <= endIndex &&
           studentsData[startIndex].length === 0
@@ -54,9 +58,12 @@ const StudentRegistration = () => {
         console.log(
           "Данные студентов:",
           studentsData.slice(startIndex, endIndex)
-        ); // Выводим данные студентов в консоль
+        );
 
         const auth = getAuth(initializeApp(firebaseConfig));
+        const db = getDatabase();
+
+        const studentsForExcel = [];
 
         for (let i = startIndex; i < endIndex; i++) {
           const student = studentsData[i];
@@ -75,31 +82,36 @@ const StudentRegistration = () => {
           await updateProfile(user, { displayName });
 
           console.log(`Студент ${displayName} зарегистрирован`);
+
+          studentsForExcel.push({ name: displayName, email, password });
+          const userRole = {
+            role: "student",
+            group: originalFileName.replace(".xlsx", ""),
+          };
+          await set(ref(db, "roles/" + user.uid), userRole);
         }
 
         console.log("Регистрация студентов завершена");
 
-        // Создание и скачивание файла Excel
-        const workbookForDownload = utils.book_new();
-        const worksheetForDownload = utils.json_to_sheet(studentsData);
-        utils.book_append_sheet(
-          workbookForDownload,
-          worksheetForDownload,
-          "Students"
+        const newWorkbook = utils.book_new();
+        const newWorksheet = utils.json_to_sheet(studentsForExcel, {
+          header: ["name", "email", "password"],
+        });
+        utils.book_append_sheet(newWorkbook, newWorksheet, "New Students");
+
+        const newFileName = originalFileName.replace(
+          ".xlsx",
+          "_passwords.xlsx"
         );
-        const excelData = utils.write(workbookForDownload, {
-          type: "buffer",
-          bookType: "xlsx",
-        });
-        const dataBlob = new Blob([excelData], {
-          type: "application/octet-stream",
-        });
-        const downloadUrl = URL.createObjectURL(dataBlob);
-        const a = document.createElement("a");
-        a.href = downloadUrl;
-        a.download = "students.xlsx";
-        a.click();
-        URL.revokeObjectURL(downloadUrl);
+        writeFile(newWorkbook, newFileName);
+
+        // Try to sign out the user and catch any errors
+        try {
+          await signOut(auth);
+          history.push("/login");
+        } catch (error) {
+          console.error("Ошибка при выходе из системы:", error);
+        }
       };
 
       fileReader.readAsArrayBuffer(selectedFile);
@@ -109,16 +121,14 @@ const StudentRegistration = () => {
   };
 
   const generateRandomPassword = () => {
-    const length = 8; // Длина сгенерированного пароля
+    const length = 8;
     const charset =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // Набор символов, используемых в пароле
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let password = "";
-
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * charset.length);
       password += charset[randomIndex];
     }
-
     return password;
   };
 
