@@ -1,3 +1,4 @@
+import { Button, message } from "antd";
 import { initializeApp } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
@@ -104,14 +105,15 @@ const StudentRegistration = () => {
           "_passwords.xlsx"
         );
         writeFile(newWorkbook, newFileName);
-
-        // Try to sign out the user and catch any errors
+        message.success("Студенты успешно зарегистрированы!");
         try {
           await signOut(auth);
           history.push("/login");
         } catch (error) {
           console.error("Ошибка при выходе из системы:", error);
         }
+
+        // Try to sign out the user and catch any errors
       };
 
       fileReader.readAsArrayBuffer(selectedFile);
@@ -134,8 +136,16 @@ const StudentRegistration = () => {
 
   return (
     <div>
+      <h2 style={{ fontSize: "24px", marginBottom: "20px" }}>
+        Регистрация студентов
+      </h2>
       <input type="file" accept=".xlsx" onChange={handleFileUpload} />
-      <button onClick={handleRegistration}>Зарегистрировать студентов</button>
+      <Button onClick={handleRegistration}>Зарегистрировать студентов</Button>
+
+      <p style={{ fontSize: "12px", marginTop: "30px" }}>
+        *После успешной регистрации Вы автоматически выйдете из системы в целях
+        безопасности
+      </p>
     </div>
   );
 };

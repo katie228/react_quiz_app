@@ -22,7 +22,7 @@ const reducer = (state, action) => {
     case "answer":
       const questions = _.cloneDeep(state);
       questions[action.questionID].options[action.optionIndex].checked =
-          action.value;
+        action.value;
 
       return questions;
     default:
@@ -98,7 +98,11 @@ export default function Quiz() {
   useEffect(() => {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
-    setTimeText(`${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`);
+    setTimeText(
+      `${minutes.toString().padStart(2, "0")}:${seconds
+        .toString()
+        .padStart(2, "0")}`
+    );
   }, [timeLeft]);
 
   async function submit() {
@@ -172,30 +176,30 @@ export default function Quiz() {
   }
 
   const percentage =
-      questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
+    questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   return (
-      <>
-        {loading && <div>Загрузка ...</div>}
-        {error && <div>Ошибка!</div>}
-        {!loading && !error && qna && qna.length > 0 && (
-            <>
-              <div>Оставшееся время: {timeText}</div>
-              <h1>{qna[currentQuestion].content}</h1>
-              <h4>Вопрос может иметь несколько ответов</h4>
-              <Answers
-                  input
-                  options={qna[currentQuestion].options}
-                  handleChange={handleAnswerChange}
-              />
-              <ProgressBar
-                  next={nextQuestion}
-                  prev={prevQuestion}
-                  submit={submit}
-                  progress={percentage}
-              />
-            </>
-        )}
-      </>
+    <>
+      {loading && <div></div>}
+      {error && <div>Ошибка!</div>}
+      {!loading && !error && qna && qna.length > 0 && (
+        <>
+          <div>Оставшееся время: {timeText}</div>
+          <h1>{qna[currentQuestion].content}</h1>
+          <h4>Вопрос может иметь несколько ответов</h4>
+          <Answers
+            input
+            options={qna[currentQuestion].options}
+            handleChange={handleAnswerChange}
+          />
+          <ProgressBar
+            next={nextQuestion}
+            prev={prevQuestion}
+            submit={submit}
+            progress={percentage}
+          />
+        </>
+      )}
+    </>
   );
 }

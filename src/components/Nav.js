@@ -6,7 +6,7 @@ import Account from "./Account";
 export default function Nav() {
   return (
     <nav className={classes.nav}>
-      <ul>
+      <ul className={classes.navList}>
         <li>
           <Link to="/" className={classes.brand}>
             <img src={logo} alt="QuiZZZy" />

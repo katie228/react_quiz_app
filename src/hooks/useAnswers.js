@@ -8,15 +8,13 @@ export default function useAnswers(taskID) {
 
   useEffect(() => {
     async function fetchAnswers() {
-      // database related works
       const db = getDatabase();
-      const answerRef = ref(db, "quizzes/" + taskID + "/questions"); //"answers/"
+      const answerRef = ref(db, "quizzes/" + taskID + "/questions");
       const answerQuery = query(answerRef, orderByKey());
 
       try {
         setError(false);
         setLoading(true);
-        // request firebase database
         const snapshot = await get(answerQuery);
         setLoading(false);
         if (snapshot.exists()) {

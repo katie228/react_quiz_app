@@ -14,7 +14,7 @@ export default function Tasks() {
         <InfiniteScroll
           dataLength={tasks.length}
           hasMore={hasMore}
-          loader="Загрузка..."
+          loader=""
           next={() => setPage(page + 8)}
         >
           {tasks.map((task) =>

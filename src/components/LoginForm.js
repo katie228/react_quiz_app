@@ -40,7 +40,7 @@ export default function LoginForm() {
         onChange={(e) => setEmail(e.target.value)}
       />
       <TextInput
-        type="text"
+        type="password"
         placeholder="Введите пароль"
         icon="lock"
         required

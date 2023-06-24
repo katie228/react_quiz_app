@@ -27,51 +27,46 @@ export default function Account() {
     history.push("/creatent");
   };
 
+  const handleStudentRegistration = () => {
+    history.push("/streg");
+  };
+
   return (
     <div className={classes.account}>
       {currentUser ? (
         <>
-          <ul>
-            <li>
-              <Button onClick={handleResForTeacher}>Результаты</Button>
-            </li>
-          </ul>
+          {currentUser.role !== "student" && (
+            <span
+              className={`${classes.icon} material-icons-outlined`}
+              title="Регистрация студентов"
+              onClick={handleStudentRegistration}
+            >
+              person_add
+            </span>
+          )}
 
-          <ul>
-            <li>
-              <Button onClick={handleHome}>Тесты</Button>
-            </li>
-          </ul>
+          <Button onClick={handleResForTeacher}>Результаты</Button>
+
+          <Button onClick={handleHome}>Тесты</Button>
 
           {/* Показать кнопку "Новый тест" только если роль пользователя не является 'student' */}
           {currentUser.role !== "student" && (
-            <ul>
-              <li>
-                <Button onClick={handleCreatent}>Новый тест</Button>
-              </li>
-            </ul>
+            <Button onClick={handleCreatent}>Новый тест</Button>
           )}
 
-          {/* Показать кнопку "Регистрация" только если роль пользователя является 'администратором' */}
-          {/*{currentUser.role === "admin" && (*/}
-          {/*<ul>*/}
-          {/*<li>*/}
-          {/*<Button onClick={handleSignUp}>Регистрация</Button>*/}
-          {/*</li>*/}
-          {/*</ul>*/}
-          {/*)}*/}
-
-          <span className="material-icons-outlined" title="Account">
+          <span
+            className={`${classes.icon} material-icons-outlined`}
+            title="Account"
+          >
             account_circle
           </span>
           <span>{currentUser.displayName}</span>
           <span
-            className="material-icons-outlined"
-            title="Logout"
+            className={`${classes.icon} material-icons-outlined`}
+            title="Выйти из аккаунта"
             onClick={logout}
           >
-            {" "}
-            logout{" "}
+            logout
           </span>
         </>
       ) : (

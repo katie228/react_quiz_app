@@ -5,6 +5,8 @@ import "../../styles/ResultsFT.css";
 
 export default function ResultsFT() {
   const [results, setResults] = useState([]);
+  const [filter, setFilter] = useState("");
+  const [sortedResults, setSortedResults] = useState([]);
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -18,11 +20,10 @@ export default function ResultsFT() {
 
       if (rolesSnapshot.exists()) {
         const rolesData = rolesSnapshot.val();
-        const userRole = rolesData[uid]?.role; // Получаем роль текущего пользователя
+        const userRole = rolesData[uid]?.role;
         console.log(userRole);
         const resultsList = [];
 
-        // Если пользователь - преподаватель, загружаем результаты всех студентов
         if (userRole === "teacher") {
           const resultsRef = ref(db, "result");
           const resultsSnapshot = await get(resultsRef);
@@ -118,12 +119,49 @@ export default function ResultsFT() {
     fetchResults();
   }, [currentUser]);
 
+  useEffect(() => {
+    const filterResults = (results, filter) => {
+      return results.filter((result) => {
+        const displayNameMatch = result.displayName
+          .toLowerCase()
+          .includes(filter.toLowerCase());
+        const disciplineMatch = result.discipline
+          .toLowerCase()
+          .includes(filter.toLowerCase());
+        const titleMatch = result.title
+          .toLowerCase()
+          .includes(filter.toLowerCase());
+        return displayNameMatch || disciplineMatch || titleMatch;
+      });
+    };
+
+    const sortResults = (results) => {
+      return results.sort((a, b) => {
+        const dateA = new Date(a.timestamp);
+        const dateB = new Date(b.timestamp);
+        console.log(dateA, dateB);
+        return dateB - dateA;
+      });
+    };
+
+    const filteredResults = filterResults(results, filter);
+    const sortedFilteredResults = sortResults(filteredResults);
+
+    setSortedResults(sortedFilteredResults);
+  }, [results, filter]);
+
   return (
     <div className="results-container">
       <h1>Результаты тестирования</h1>
-      {results.length > 0 ? (
+      <input
+        type="text"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        placeholder="Поиск"
+      />
+      {sortedResults.length > 0 ? (
         <ul className="results-list">
-          {results.map((result) => (
+          {sortedResults.map((result) => (
             <li key={result.resultId} className="result-item">
               <p>Пользователь: {result.displayName}</p>
               <p>Дисциплина: {result.discipline}</p>
@@ -136,7 +174,7 @@ export default function ResultsFT() {
           ))}
         </ul>
       ) : (
-        <p>Загрузка..</p>
+        <p></p>
       )}
     </div>
   );

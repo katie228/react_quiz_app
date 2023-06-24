@@ -42,3 +42,10 @@
   cursor: pointer;
   border: 0px;
 }
+@media screen and (max-width: 600px) {
+  .button {
+    padding: 0.4rem 0.8rem; /* Измененный размер для маленьких экранов */
+    font-size: 13px; /* Измененный размер для маленьких экранов */
+    gap: 8px; /* Измененный размер для маленьких экранов */
+  }
+}

@@ -1,13 +1,10 @@
-import {
-  LoadingOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
-import { Checkbox, Col, Form, Input, message, Row, Upload } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Checkbox, Col, Form, Input, Modal, Row } from "antd";
 import { initializeApp } from "firebase/app";
 import "firebase/database";
 import { getDatabase, push, ref } from "firebase/database";
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import Button from "../Button.js";
 
@@ -36,17 +33,15 @@ const CreateQuestion = ({
       content: "",
       points: 0,
       options: [],
-      image: null,
     },
   ]);
 
   const [totalQuestions, setTotalQuestions] = useState(1);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
+  const history = useHistory();
 
   const handleAddQuestion = () => {
-    setQuestions([
-      ...questions,
-      { content: "", points: 0, options: [], image: null },
-    ]);
+    setQuestions([...questions, { content: "", points: 0, options: [] }]);
     setQuestionIndex(questionIndex + 1);
     setTotalQuestions(totalQuestions + 1);
   };
@@ -95,17 +90,6 @@ const CreateQuestion = ({
       e.target.checked;
     setQuestions(updatedQuestions);
   };
-  const handleQuestionImageUpload = (index, file) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions[index].image = file;
-    setQuestions(updatedQuestions);
-  };
-
-  const handleQuestionImageRemove = (index) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions[index].image = null;
-    setQuestions(updatedQuestions);
-  };
 
   const calculateTotalPoints = () => {
     let totalPoints = 0;
@@ -119,55 +103,43 @@ const CreateQuestion = ({
     const totalQuestions = questions.length;
     const totalPoints = calculateTotalPoints();
 
-    const quizId = uuidv4(); // генерация уникального идентификатора
+    const quizId = uuidv4();
     const quizData = {
-      id: quizId, // добавление идентификатора к объекту quizData
+      id: quizId,
       totalquestions: totalQuestions,
       totalpoints: totalPoints,
-      title: quizTopic, // Замените на фактическое значение заголовка викторины, полученное из поля ввода
+      title: quizTopic,
       discipline: discipline,
       quizDescription: quizDescription,
       quizDuration: quizDuration,
       questions: questions.map((question) => {
         return {
-          content: question.content, // Значение содержания вопроса, полученное из поля ввода
-          points: question.points, // Значение количества баллов, полученное из поля ввода
+          content: question.content,
+          points: question.points,
           options: question.options.map((option) => {
             return {
-              content: option.content, // Значение содержания варианта ответа, полученное из поля ввода
-              correct: option.correct, // Значение правильности выбранного варианта ответа, полученное из чекбокса
+              content: option.content,
+              correct: option.correct,
             };
           }),
-          image: question.image, // Ссылка на загруженное изображение, если есть
         };
       }),
     };
-    // Подсчет количества вопросов и суммы баллов за все вопросы
 
-    // Отправьте данные в Firebase
     const quizzesRef = ref(db, "quizzes");
     push(quizzesRef, quizData)
       .then(() => {
         console.log("Данные успешно отправлены в Firebase");
+        setSuccessModalVisible(true);
       })
       .catch((error) => {
         console.error("Ошибка при отправке данных в Firebase:", error);
       });
+  };
 
-    questions.forEach((question, index) => {
-      if (question.image) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          console.log(
-            `Вопрос ${index + 1} - Содержание изображения:`,
-            reader.result
-          );
-        };
-        reader.readAsDataURL(question.image);
-      }
-    });
-
-    console.log("Все вопросы:", questions);
+  const handleModalOk = () => {
+    setSuccessModalVisible(false);
+    history.push("/home"); // Переход на другую страницу
   };
 
   return (
@@ -196,54 +168,7 @@ const CreateQuestion = ({
                 }
               />
             </Form.Item>
-            <Form.Item label="Картинка">
-              <Upload
-                name="image"
-                listType="picture-card"
-                showUploadList={false}
-                beforeUpload={(file) => {
-                  const isImage = file.type.startsWith("image/");
-                  if (!isImage) {
-                    message.error("Можно загружать только изображения!");
-                  }
-                  return isImage ? true : Upload.LIST_IGNORE;
-                }}
-                onChange={(info) => {
-                  if (info.file.status === "uploading") {
-                    handleQuestionImageUpload(questionIndex, info.file);
-                  }
-                  if (info.file.status === "done") {
-                    message.success(`${info.file.name} успешно загружен!`);
-                  }
-                  if (info.file.status === "error") {
-                    message.error(`${info.file.name} загрузка не удалась.`);
-                  }
-                }}
-                onRemove={() => handleQuestionImageRemove(questionIndex)}
-              >
-                {question.image ? (
-                  <img
-                    src={URL.createObjectURL(new Blob([question.image]))}
-                    alt="Картинка"
-                    style={{ maxWidth: "100%" }}
-                    onLoad={() =>
-                      URL.revokeObjectURL(
-                        URL.createObjectURL(new Blob([question.image]))
-                      )
-                    }
-                  />
-                ) : (
-                  <div>
-                    {question.imageLoading ? (
-                      <LoadingOutlined />
-                    ) : (
-                      <PlusOutlined />
-                    )}
-                    <div style={{ marginTop: 8 }}>Загрузить</div>
-                  </div>
-                )}
-              </Upload>
-            </Form.Item>
+
             <Form.Item label="Варианты ответа">
               {question.options.map((option, optionIndex) => (
                 <Row key={optionIndex} gutter={16}>
@@ -281,6 +206,7 @@ const CreateQuestion = ({
                 </Row>
               ))}
             </Form.Item>
+
             <Button
               style={{
                 marginTop: "3px",
@@ -332,8 +258,12 @@ const CreateQuestion = ({
         onClick={handleFinishQuizCreation}
         block
       >
-        Завершить создание викторины
+        Завершить создание теста
       </Button>
+
+      <Modal visible={successModalVisible} onOk={handleModalOk}>
+        <p>Тест успешно добавлен!</p>
+      </Modal>
     </div>
   );
 };

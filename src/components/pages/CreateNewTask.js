@@ -4,7 +4,7 @@ import "../../styles/CreateNewTask.css";
 import Button from "../Button.js";
 import CreateQuestion from "./CreateQuestion";
 
-const QuizForm = () => {
+const CreateNewTask = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
@@ -21,9 +21,9 @@ const QuizForm = () => {
         <Form form={form} onFinish={onFinish} layout="vertical">
           <Form.Item
             name="quizTopic"
-            label="Тема викторины"
-            rules={[{ required: true, message: "Введите тему викторины" }]}
-            className="custom-label" // Применяем пользовательский класс
+            label="Тема теста"
+            rules={[{ required: true, message: "Введите тему теста" }]}
+            className="custom-label"
           >
             <Input />
           </Form.Item>
@@ -39,8 +39,8 @@ const QuizForm = () => {
 
           <Form.Item
             name="quizDescription"
-            label="Описание викторины"
-            rules={[{ required: true, message: "Введите описание викторины" }]}
+            label="Описание теста"
+            rules={[{ required: true, message: "Введите описание теста" }]}
             className="custom-label" // Применяем пользовательский класс
           >
             <Input.TextArea />
@@ -48,8 +48,13 @@ const QuizForm = () => {
 
           <Form.Item
             name="quizDuration"
-            label="Время прохождения (в секундах)"
-            rules={[{ required: true, message: "Введите время прохождения" }]}
+            label="Время прохождения в минутах "
+            rules={[
+              {
+                required: true,
+                message: "Введите время прохождения в минутах",
+              },
+            ]}
             className="custom-label" // Применяем пользовательский класс
           >
             <Input type="number" min={1} />
@@ -74,4 +79,4 @@ const QuizForm = () => {
   );
 };
 
-export default QuizForm;
+export default CreateNewTask;
